@@ -1,38 +1,116 @@
-import { useState } from 'react'
+import { dbPortfolioRef } from '../firebase/firebase';
+ import { addDoc } from  'firebase/firestore';
+import { useState, useReducer } from 'react'
+import InputField from './generic/Input';
+import Button from './generic/Button'
+
+const baseUrl = 'https://api.dataforsyningen.dk/'
+
+
+
+const initialState = {
+  rooms: "",
+  size: "",
+  rent: "",
+  contract: ""
+}
+
+function init(initialState) {
+  return initialState;
+}
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'setState':
+      return {
+        ...state,
+        [action.payload.field]: action.payload.value
+    }
+    case 'reset':
+      return init(action.payload);
+    default:
+      throw new Error();
+  }
+}
 
 export default function CreatePortfolioItem() {
-    const [ addressList, setAddressList] = useState([])
-    const [ addressSearch, setAddressSearch] = useState([])
-    const [ street, setStreet] = useState([])
-    const [ province, setProvince] = useState([])
-    const [ city, setCity] = useState([])
-    const [ zip, setZip] = useState([])
-  
+    const [ addressList, setAddressList] = useState<Array<object> | []>([])
+    const [ addressSearch, setAddressSearch] = useState('')
+    const [ street, setStreet] = useState('')
+    const [ city, setCity] = useState('')
+    const [ zip, setZip] = useState('')
+    const [state, dispatch] = useReducer(reducer, initialState, init)
+
+    const onChange = (e) => {
+      dispatch({type: 'setState', payload: {field: e.target.name, value: e.target.value}})
+    }
+
+    const {rooms, size, rent, contract} = state
+    console.log(state)
+
+    const addressDataformGroup = [
+      {label: "*Street", name: "street", type:"text", value: street},
+      {label: "*City", name: "city", type:"text", value: city },
+      {label: "*Zip", name: "zip", type:"text", value: zip }
+    ]
+
+    const generalDataformGroup = [
+      {label: "Rooms", name: "rooms", type:"text", value: rooms },
+      {label: "Size", name: "size", type:"text", value: size },
+      {label: "Rent", name: "rent", type:"text", value: rent }
+    ]
+
   async function searchAddress(e) {
     setAddressSearch(e.target.value)
-    console.log(e.target.value)
+    let splitAddress = e.target.value.split(',')
+    let lastItem = splitAddress [splitAddress.length - 1].split(' ')
+   
+    if(splitAddress .length > 1){
+      setStreet(splitAddress[0])
+      setZip(lastItem[1])
+      setCity(lastItem[2])
+   
+    }
       try {
-          const response = await fetch(`https://api.dataforsyningen.dk/autocomplete?type=adresse&q=${addressSearch}&caretpos=4`)
-          const registerList = await response.json();
+          const searchRequest = await fetch(`${baseUrl}autocomplete?type=adresse&q=${addressSearch}&caretpos=4`)
+          const registerList = await searchRequest.json();
           setAddressList(registerList)
-          console.log(registerList)
+          
       } catch (error) {
           console.error(error);
       }
   }
   
-  function prefillAddressFields(e){
-    console.log(e.target.value)
-   
-  }
- // setStreet()
-    // setProvince()
-    // setCity()
-    // setZip()
-    
-function handleSubmit(e) {
+
+async function handleSubmit(e) {
     e.preventDefault();
-    console.log('You clicked submit.');
+    let isValidAddress = false
+    try {
+      const validateRequest = await fetch(`${baseUrl}autocomplete?type=adresse&q=${addressSearch}&caretpos=4`)
+      const result = await validateRequest.json();
+      console.log(result[0].forslagstekst)
+    if(result[0].forslagstekst === addressSearch){
+        isValidAddress = true
+    }
+      
+  } catch (error) {
+      console.error(error);
+  }
+  console.log(isValidAddress)
+      if(isValidAddress) {
+
+      let formData = {
+    ...state,
+    address: addressSearch
+
+          }
+    addDoc(dbPortfolioRef, formData)
+    dispatch({type: 'reset', payload: initialState})
+    setAddressSearch('')
+
+      }
+
+   console.log('You clicked submit.');
   }
     return (
       <>
@@ -74,7 +152,7 @@ function handleSubmit(e) {
   
                       <div className="col-span-6">
                         <label htmlFor="street-address" className="block text-sm font-medium text-gray-700">
-                        *Type address to prefill below fields 
+                        *Start typing street to prefill below fields 
                         </label>
                         <input
                           list="address"
@@ -87,142 +165,61 @@ function handleSubmit(e) {
                           className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                         />
                         <datalist id="address">
-                          {addressList.length > 0 ? addressList.map((item) => 
+                          {addressList.length > 0 ? addressList.map((addressItem) => 
                           (
-                          <option onClick={prefillAddressFields} key={item.tekst}>{item.tekst}</option>
+                          <option key={addressItem.forslagstekst}>{addressItem.forslagstekst}</option>
                           )
                           ) : 
                           <option>No similar address found</option>}
                         </datalist>
                       </div>
-                    
-                      <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                        *Street and house number
-                        </label>
-                        <input
-                          type="text"
-                          name="street"
-                          value={street}
-                          id="street"
-                          autoComplete="address-level2"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        />
-                      </div>
 
-                      <div className="col-span-6 sm:col-span-6 lg:col-span-2">
-                        <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                        *City
-                        </label>
-                        <input
-                          type="text"
-                          name="city"
-                          value={city}
-                          id="city"
-                          autoComplete="address-level2"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        />
-                      </div>
-  
-                      <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-                        <label htmlFor="region" className="block text-sm font-medium text-gray-700">
-                        *State / Province
-                        </label>
-                        <input
-                          type="text"
-                          name="region"
-                          value={province}
-                          id="region"
-                          autoComplete="address-level1"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        />
-                      </div>
-  
-                      <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-                        <label htmlFor="postal-code" className="block text-sm font-medium text-gray-700">
-                          *ZIP / Postal code
-                        </label>
-                        <input
-                          type="text"
-                          name="postal-code"
-                          id="postal-code"
-                          value={zip}
-                          autoComplete="postal-code"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        />
-                      </div>
+                 
 
-                      <div className="col-span-6 sm:col-span-2">
-                        <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
-                          Rooms
-                        </label>
-                        <input
-                          type="text"
-                          name="first-name"
-                          id="first-name"
-                          autoComplete="given-name"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                      {addressDataformGroup.map((fieldName) => (<div key={fieldName.label} className="col-span-6 sm:col-span-2">
+                        <InputField
+                          type={fieldName.type}
+                          name={fieldName.name}
+                          id={fieldName.name}
+                          label={fieldName.label}
+                          value={fieldName.value}
+                          readOnly={true}
                         />
                       </div>
-  
-                      <div className="col-span-6 sm:col-span-2">
-                        <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
-                          Size
-                        </label>
-                        <input
-                          type="text"
-                          name="last-name"
-                          id="last-name"
-                          autoComplete="family-name"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        />
-                      </div>
+                     
+                      ))}
 
-                      <div className="col-span-6 sm:col-span-2">
-                        <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
-                          Rent
-                        </label>
-                        <input
-                          type="text"
-                          name="last-name"
-                          id="last-name"
-                          autoComplete="family-name"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                      {generalDataformGroup.map((fieldName) => (<div key={fieldName.label} className="col-span-6 sm:col-span-2">
+                        <InputField
+                          type={fieldName.type}
+                          name={fieldName.name}
+                          id={fieldName.name}
+                          value={fieldName.value}
+                          onChange={onChange}
+                          label={fieldName.label}
+                          readOnly={false}
                         />
                       </div>
+                     
+                      ))}
   
                       <div className="col-span-6 sm:col-span-4">
-                        <label htmlFor="email-address" className="block text-sm font-medium text-gray-700">
-                          Tenant
-                        </label>
-                        <input
-                          type="text"
-                          name="email-address"
-                          id="email-address"
-                          autoComplete="email"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        />
-                      </div>
-                      <div className="col-span-6 sm:col-span-4">
-                        <label htmlFor="email-address" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="contract" className="block text-sm font-medium text-gray-700">
                           Contract Type
                         </label>
                         <input
                           type="text"
-                          name="email-address"
-                          id="email-address"
-                          autoComplete="email"
+                          name="contract"
+                          id="contract"
+                          value={contract}
+                          onChange={onChange}
                           className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                         />
                       </div>
                     </div>
                   </div>
                   <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                    <button
-                      type="submit"
-                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      Save
-                    </button>
+                    <Button  name={'Save'} type={'submit'}/>
                   </div>
                 </div>
               </form>

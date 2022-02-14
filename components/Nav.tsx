@@ -9,7 +9,8 @@ const navigation = [
   
 ]
 
-function classNames(...classes) {
+
+function classNames(...classes: array<string>) {
   return classes.filter(Boolean).join(' ')
 }
 

@@ -7,7 +7,6 @@ const tableHeaders =
     address: true,
     rooms: true,
     size: true,
-    tenant: true,
     rent: true,
     contract: true,
     streetView: true ,
@@ -22,12 +21,12 @@ export default function PortfolioList() {
       dbPortfolioRef,
       {}
     );
-  let portfolio = (!portfolioItemsLoading && portfolioItems) ? portfolioItems.docs.map((doc) => doc.data()) : [];
+  let portfolio = (!portfolioItemsLoading && portfolioItems) ? portfolioItems.docs.map((doc) => { return {id: doc.id, ...doc.data()}}) : []
     
        
   return (
     <div>
-    <List portfolio={portfolio} headers={tableHeaders}/>
+    <List tableData={portfolio} headers={tableHeaders}/>
         <p>{portfolioItemsError}</p>
     </div>
   )

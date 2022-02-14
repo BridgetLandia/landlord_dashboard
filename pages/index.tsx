@@ -21,6 +21,7 @@ const Home: NextPage = () => {
                     </button>
                   </div>
       <PortfolioList />
+     
     
     </div>
   )

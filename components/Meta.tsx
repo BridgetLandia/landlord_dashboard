@@ -1,6 +1,13 @@
 import Head from 'next/head'
 
-const Meta = ({ title, keywords, description }) => {
+type MetaProps = {
+  title: string,
+  keywords: string,
+  description: string,
+}
+
+
+const Meta = ({ title, keywords, description }: MetaProps) => {
   return (
     <Head>
       <meta name='viewport' content='width=device-width, initial-scale=1' />
@@ -18,5 +25,7 @@ Meta.defaultProps = {
   keywords: 'rentals, landlords, accounting, real estate',
   description: 'The best property management software for landlords',
 }
+
+
 
 export default Meta
