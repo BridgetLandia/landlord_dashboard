@@ -17,7 +17,7 @@ const baseUrl = 'https://api.dataforsyningen.dk/'
       type: 'setState',
       payload: {
       field: string
-      value: string}
+      value: string | number}
 
     }
     | {
@@ -32,9 +32,9 @@ const baseUrl = 'https://api.dataforsyningen.dk/'
   }
 
 type initialState = {
-  rooms: string,
-  size: string,
-  rent: string,
+  rooms: number | string,
+  size: number | string,
+  rent: number | string,
   contract: string
 }
 
@@ -77,7 +77,7 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
     const [state, dispatch] = useReducer(reducer, initialState, init)
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      dispatch({type: 'setState', payload: {field: e.currentTarget.name, value: e.currentTarget.value}})
+      dispatch({type: 'setState', payload: {field: e.currentTarget.name, value: Number(e.currentTarget.value)}})
     }
 
     const {rooms, size, rent, contract} = state
@@ -90,9 +90,9 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
     ]
 
     const generalDataformGroup = [
-      {label: "Rooms", name: "rooms", type:"text", value: rooms, unit:"rooms" },
-      {label: "Size", name: "size", type:"text", value: size, unit: "m2"  },
-      {label: "Rent", name: "rent", type:"text", value: rent, unit: "Currency", unitTypes: ["EUR", "USD", "DKK"]}
+      {label: "Rooms", name: "rooms", type:"number", value: rooms, unit:"rooms" },
+      {label: "Size", name: "size", type:"number", value: size, unit: "m2"  },
+      {label: "Rent", name: "rent", type:"number", value: rent, unit: "Currency", unitTypes: ["EUR", "USD", "DKK"]}
     ]
 
   async function searchAddress(
@@ -139,7 +139,7 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     ...state,
     address: addressSearch }
 
-    
+
     addDoc(dbPortfolioRef, formData)
     dispatch({type: 'reset', payload: initialState})
     setAddressSearch('')

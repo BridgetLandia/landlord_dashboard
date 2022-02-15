@@ -23,6 +23,7 @@ type Props = {
 
 
 export default function PortfolioList(props: Props) {
+  console.log(props.sortValue)
     const q = query(dbPortfolioRef , orderBy(props.sortValue, "asc"))
     const [portfolioItems, portfolioItemsLoading, portfolioItemsError] = useCollection(
       q,
