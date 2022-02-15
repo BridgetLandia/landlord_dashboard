@@ -18,8 +18,9 @@ const firebaseConfig = {
 const defaultProject = initializeApp(firebaseConfig);
 
 //Shortcut to Firestore 
-let db = getFirestore(defaultProject)
+export const db = getFirestore(defaultProject)
 
 
  
 export const dbPortfolioRef = collection(db, 'portfolio');
+

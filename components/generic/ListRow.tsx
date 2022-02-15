@@ -24,12 +24,14 @@ export default function ListRow({property, headers}: TableRow) {
     // Because I am using NoSQL Database I sort the document fields based on the Headers
     let deleteItemData = { id: property.id, address: property.address }
     const sortingArray = Object.keys(headers)    
-    let portfolioDataArray = Object.entries(property)
+      let portfolioDataArray = Object.entries(property)
     const sortedProperties = useMemo(
+      
         () =>
+       
             portfolioDataArray.sort((a, b) => 
                 sortingArray.indexOf(a[0]) - sortingArray.indexOf(b[0])),
-        [property]
+        [ portfolioDataArray, sortingArray ]
       );
    // Delete document ID
     sortedProperties.shift()
@@ -47,7 +49,7 @@ export default function ListRow({property, headers}: TableRow) {
     {sortedProperties.map((propertyData) => (
           <td className="px-6 py-4 whitespace-nowrap" key={propertyData[0]}>
             <div className="flex items-center">
-            <div className="text-sm font-medium text-gray-900">{propertyData[1]}</div>
+            <div className="text-sm font-medium text-gray-900">{`${propertyData[1]}`}</div>
             </div>
           </td> ))}
 

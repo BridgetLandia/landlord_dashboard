@@ -1,5 +1,6 @@
-import { dbPortfolioRef } from '../../firebase/firebase';
-import { useCollection } from "react-firebase-hooks/firestore";
+import { dbPortfolioRef} from '../../firebase/firebase';
+import { useCollection } from 'react-firebase-hooks/firestore';
+import { query, orderBy } from 'firebase/firestore'
 import List from '../generic/List'
 
 
@@ -16,15 +17,18 @@ const tableHeaders =
 }
     
 
+type Props = {
+  sortValue: string
+}
 
-export default function PortfolioList() {
+
+export default function PortfolioList(props: Props) {
+    const q = query(dbPortfolioRef , orderBy(props.sortValue, "asc"))
     const [portfolioItems, portfolioItemsLoading, portfolioItemsError] = useCollection(
-      dbPortfolioRef,
+      q,
       {}
     );
-  let portfolio = (!portfolioItemsLoading && portfolioItems) ? portfolioItems.docs.map((doc) => { return {id: doc.id, ...doc.data()}}) : []
-    
-       
+  let portfolio = (!portfolioItemsLoading && portfolioItems) ? portfolioItems.docs.map((doc) => { return {id: doc.id, ...doc.data()}}) : []    
   return (
     <>
     <List tableData={portfolio} headers={tableHeaders}/>

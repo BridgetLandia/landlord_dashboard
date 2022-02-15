@@ -2,6 +2,7 @@ import { dbPortfolioRef } from '../../firebase/firebase';
  import { addDoc } from  'firebase/firestore';
 import { useState, useReducer } from 'react'
 import InputField from '../generic/Input';
+import InputFieldWithUnit from '../generic/InputWithUnit'
 import Button from '../generic/Button'
 
 const baseUrl = 'https://api.dataforsyningen.dk/'
@@ -89,9 +90,9 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
     ]
 
     const generalDataformGroup = [
-      {label: "Rooms", name: "rooms", type:"text", value: rooms },
-      {label: "Size", name: "size", type:"text", value: size },
-      {label: "Rent", name: "rent", type:"text", value: rent }
+      {label: "Rooms", name: "rooms", type:"text", value: rooms, unit:"rooms" },
+      {label: "Size", name: "size", type:"text", value: size, unit: "m2"  },
+      {label: "Rent", name: "rent", type:"text", value: rent, unit: "Currency", unitTypes: ["EUR", "USD", "DKK"]}
     ]
 
   async function searchAddress(
@@ -136,9 +137,9 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 
       let formData = {
     ...state,
-    address: addressSearch
+    address: addressSearch }
 
-          }
+    
     addDoc(dbPortfolioRef, formData)
     dispatch({type: 'reset', payload: initialState})
     setAddressSearch('')
@@ -225,7 +226,7 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
                       ))}
 
                       {generalDataformGroup.map((fieldName) => (<div key={fieldName.label} className="col-span-6 sm:col-span-2">
-                        <InputField
+                        <InputFieldWithUnit
                           type={fieldName.type}
                           name={fieldName.name}
                           id={fieldName.name}
@@ -233,6 +234,8 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
                           onChange={onChange}
                           label={fieldName.label}
                           readOnly={false}
+                          unit={fieldName.unit}
+                          unitTypes={fieldName.unitTypes}
                         />
                       </div>
                      
