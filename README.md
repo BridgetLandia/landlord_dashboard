@@ -12,11 +12,7 @@ And the returned query would always contain the same fields always.
 
 ✨ CSS
 
-I like Tailwind looks but too much CSS in HTML for my taste.
-Chakra or Materail UI for eg might have been a better choice. 
-In React world there are nothing like Quasar or Vuetify. Check out their autocompletes and cry or show me yours 😄
-https://vuetifyjs.com/en/components/autocompletes/#examples
-I used a Table to list items but 
+
 
 
 🪄 Used Fetch API instead of axios library because I didn't need interceptors or other functionality. 

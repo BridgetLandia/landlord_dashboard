@@ -1,20 +1,25 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
-
-const navigation = [
-  { name: 'Portfolio', href: '#', current: true },
-  { name: 'Accounting', href: '#', current: false },
-  { name: 'Messages', href: '#', current: false },
-  
-]
+import LanguageSwitcher from './LanguageSwitcher'
+import { useTranslation } from 'next-i18next';
 
 
-function classNames(...classes: array<string>) {
+
+
+function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function Nav() {
+  const { t } = useTranslation();
+  const navigation = [
+    { name: t('portfolio'), href: '#', current: true },
+    { name: t('accounting'), href: '#', current: false },
+    { name: t('messages'), href: '#', current: false },
+    
+  ]
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -59,6 +64,7 @@ export default function Nav() {
                   </div>
                 </div>
               </div>
+              <LanguageSwitcher/>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <button
                   type="button"

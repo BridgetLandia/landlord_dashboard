@@ -2,6 +2,7 @@ import { dbPortfolioRef } from '../../firebase/firebase';
 import { useCollection } from "react-firebase-hooks/firestore";
 import List from '../generic/List'
 
+
 const tableHeaders = 
     {
     address: true,
@@ -25,9 +26,9 @@ export default function PortfolioList() {
     
        
   return (
-    <div>
+    <>
     <List tableData={portfolio} headers={tableHeaders}/>
         <p>{portfolioItemsError}</p>
-    </div>
+    </>
   )
 }

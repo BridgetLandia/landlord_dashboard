@@ -1,11 +1,45 @@
-import { dbPortfolioRef } from '../firebase/firebase';
+import { dbPortfolioRef } from '../../firebase/firebase';
  import { addDoc } from  'firebase/firestore';
 import { useState, useReducer } from 'react'
-import InputField from './generic/Input';
-import Button from './generic/Button'
+import InputField from '../generic/Input';
+import Button from '../generic/Button'
 
 const baseUrl = 'https://api.dataforsyningen.dk/'
 
+  type State = {
+    initalState: object;
+  }
+
+
+  type Actions = 
+    | {
+      type: 'setState',
+      payload: {
+      field: string
+      value: string}
+
+    }
+    | {
+      type: 'reset'
+      payload: initialState
+      
+    }
+  
+
+  interface Props {
+    closeForm: () => void,
+  }
+
+type initialState = {
+  rooms: string,
+  size: string,
+  rent: string,
+  contract: string
+}
+
+type addressItem = 
+  | {
+  forslagstekst: string} 
 
 
 const initialState = {
@@ -15,11 +49,11 @@ const initialState = {
   contract: ""
 }
 
-function init(initialState) {
+function init(initialState: any) {
   return initialState;
 }
 
-function reducer(state, action) {
+function reducer(state: State, action: Actions) {
   switch (action.type) {
     case 'setState':
       return {
@@ -33,16 +67,16 @@ function reducer(state, action) {
   }
 }
 
-export default function CreatePortfolioItem() {
-    const [ addressList, setAddressList] = useState<Array<object> | []>([])
-    const [ addressSearch, setAddressSearch] = useState('')
-    const [ street, setStreet] = useState('')
-    const [ city, setCity] = useState('')
-    const [ zip, setZip] = useState('')
+const CreatePortfolioItem: React.FC<Props> = (props) => {
+    const [ addressList, setAddressList] = useState<Array<addressItem> | []>([])
+    const [ addressSearch, setAddressSearch] = useState<string>('')
+    const [ street, setStreet] = useState<string>('')
+    const [ city, setCity] = useState<string>('')
+    const [ zip, setZip] = useState<string>('')
     const [state, dispatch] = useReducer(reducer, initialState, init)
 
-    const onChange = (e) => {
-      dispatch({type: 'setState', payload: {field: e.target.name, value: e.target.value}})
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      dispatch({type: 'setState', payload: {field: e.currentTarget.name, value: e.currentTarget.value}})
     }
 
     const {rooms, size, rent, contract} = state
@@ -60,9 +94,10 @@ export default function CreatePortfolioItem() {
       {label: "Rent", name: "rent", type:"text", value: rent }
     ]
 
-  async function searchAddress(e) {
-    setAddressSearch(e.target.value)
-    let splitAddress = e.target.value.split(',')
+  async function searchAddress(
+    e: React.ChangeEvent<HTMLInputElement>) {
+    setAddressSearch(e.currentTarget.value)
+    let splitAddress = e.currentTarget.value.split(',')
     let lastItem = splitAddress [splitAddress.length - 1].split(' ')
    
     if(splitAddress .length > 1){
@@ -82,7 +117,7 @@ export default function CreatePortfolioItem() {
   }
   
 
-async function handleSubmit(e) {
+async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     let isValidAddress = false
     try {
@@ -123,7 +158,7 @@ async function handleSubmit(e) {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">Property Information</h3>
+                <h3 className="text-lg font-medium leading-6 text-gray-900">Add Property Information</h3>
                 <p className="mt-1 text-sm text-gray-600">All fields marked with an asterisk (*) are required</p>
               </div>
             </div>
@@ -165,7 +200,7 @@ async function handleSubmit(e) {
                           className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                         />
                         <datalist id="address">
-                          {addressList.length > 0 ? addressList.map((addressItem) => 
+                          {addressList.length > 0 ? addressList.map((addressItem: addressItem) => 
                           (
                           <option key={addressItem.forslagstekst}>{addressItem.forslagstekst}</option>
                           )
@@ -219,7 +254,8 @@ async function handleSubmit(e) {
                     </div>
                   </div>
                   <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                    <Button  name={'Save'} type={'submit'}/>
+                  <Button  name={'Cancel'} type={'button'} onClick={props.closeForm} className="mx-10"/> 
+                  <Button  name={'Save'} type={'submit'}/>
                   </div>
                 </div>
               </form>
@@ -229,3 +265,5 @@ async function handleSubmit(e) {
         </>
   )
 }
+
+export default CreatePortfolioItem

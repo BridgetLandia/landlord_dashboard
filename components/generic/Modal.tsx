@@ -2,13 +2,9 @@ import { Fragment, useRef, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon } from '@heroicons/react/outline'
 
-export default function Modal({openModal}) {
+export default function Modal() {
   const [open, setOpen] = useState(false)
-  useEffect(() => {
-    if(openModal){
-      setOpen(true)
-    }
-   }, []);
+  
   const cancelButtonRef = useRef(null)
 
   return (

@@ -1,4 +1,4 @@
-import React  from "react";
+import React from "react";
 
 type InputFields = {
     value?: string, 
@@ -7,7 +7,7 @@ type InputFields = {
     id: string,
     placeholder?: string, 
     type: string,
-    onChange?: ChangeEvent<HTMLInputElement>,
+    onChange?: React.ChangeEventHandler,
     readOnly: boolean,
     style?: string
 }
