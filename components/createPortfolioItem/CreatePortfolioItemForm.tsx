@@ -1,5 +1,5 @@
 import { dbPortfolioRef } from '../../firebase/firebase';
- import { addDoc } from  'firebase/firestore';
+import { addDoc } from  'firebase/firestore';
 import { useState, useReducer } from 'react'
 import InputField from '../generic/Input';
 import InputFieldWithUnit from '../generic/InputWithUnit'
@@ -12,12 +12,14 @@ const baseUrl = 'https://api.dataforsyningen.dk/'
   }
 
 
+
   type Actions = 
     | {
       type: 'setState',
       payload: {
       field: string
-      value: string | number}
+      value: string | number,
+    }
 
     }
     | {
@@ -25,18 +27,25 @@ const baseUrl = 'https://api.dataforsyningen.dk/'
       payload: initialState
       
     }
+
+    
+  
   
 
   interface Props {
     closeForm: () => void,
   }
 
+
 type initialState = {
   rooms: number | string,
   size: number | string,
   rent: number | string,
-  contract: string
+  contract: string,
+  
 }
+
+
 
 type addressItem = 
   | {
@@ -47,8 +56,11 @@ const initialState = {
   rooms: "",
   size: "",
   rent: "",
-  contract: ""
+  contract: "",
+  
 }
+
+
 
 function init(initialState: any) {
   return initialState;
@@ -68,19 +80,28 @@ function reducer(state: State, action: Actions) {
   }
 }
 
+
+
+
+
+
 const CreatePortfolioItem: React.FC<Props> = (props) => {
     const [ addressList, setAddressList] = useState<Array<addressItem> | []>([])
     const [ addressSearch, setAddressSearch] = useState<string>('')
     const [ street, setStreet] = useState<string>('')
     const [ city, setCity] = useState<string>('')
     const [ zip, setZip] = useState<string>('')
+    const [ isValidAddress, setisValidAddress] = useState<string | boolean>("Not validated")
     const [state, dispatch] = useReducer(reducer, initialState, init)
+    
+   
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       dispatch({type: 'setState', payload: {field: e.currentTarget.name, value: Number(e.currentTarget.value)}})
     }
 
     const {rooms, size, rent, contract} = state
+    
     console.log(state)
 
     const addressDataformGroup = [
@@ -111,7 +132,7 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
           const searchRequest = await fetch(`${baseUrl}autocomplete?type=adresse&q=${addressSearch}&caretpos=4`)
           const registerList = await searchRequest.json();
           setAddressList(registerList)
-          
+          setisValidAddress("Not validated")
       } catch (error) {
           console.error(error);
       }
@@ -120,21 +141,23 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
 
 async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    let isValidAddress = false
+    let validation = false
     try {
       const validateRequest = await fetch(`${baseUrl}autocomplete?type=adresse&q=${addressSearch}&caretpos=4`)
       const result = await validateRequest.json();
       console.log(result[0].forslagstekst)
     if(result[0].forslagstekst === addressSearch){
-        isValidAddress = true
+       validation = true
+       
     }
       
   } catch (error) {
       console.error(error);
   }
-  console.log(isValidAddress)
-      if(isValidAddress) {
-
+  
+  console.log(validation)
+      if(validation) {
+        setisValidAddress("Not validated")
       let formData = {
     ...state,
     address: addressSearch }
@@ -144,9 +167,11 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     dispatch({type: 'reset', payload: initialState})
     setAddressSearch('')
 
+      } else {
+        setisValidAddress(false)
       }
-
-   console.log('You clicked submit.');
+        console.log(isValidAddress)
+   console.log('You clicked submit.')
   }
     return (
       <>
@@ -198,7 +223,7 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
                           name="street-address"
                           id="street-address"
                           autoComplete="street-address"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          className={`mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm ${isValidAddress ? 'border-gray-300' : 'border border-red-700'} rounded-md`}
                         />
                         <datalist id="address">
                           {addressList.length > 0 ? addressList.map((addressItem: addressItem) => 
@@ -208,6 +233,7 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
                           ) : 
                           <option>No similar address found</option>}
                         </datalist>
+                        {!isValidAddress  && <span className="text-xs text-red-700" id="passwordHelp">Invalid address, choose from the dropdown</span>}
                       </div>
 
                  
