@@ -1,88 +1,21 @@
 import { dbPortfolioRef } from '../../firebase/firebase';
 import { addDoc } from  'firebase/firestore';
-import { useState, useReducer } from 'react'
+import { useState } from 'react'
 import InputField from '../generic/Input';
 import InputFieldWithUnit from '../generic/InputWithUnit'
 import Button from '../generic/Button'
+import { usePortfolioFormReducer, initialState } from './ReducerCreatePortfolio';
 
 const baseUrl = 'https://api.dataforsyningen.dk/'
 
-  type State = {
-    initalState: object;
-  }
-
-
-
-  type Actions = 
-    | {
-      type: 'setState',
-      payload: {
-      field: string
-      value: string | number,
-    }
-
-    }
-    | {
-      type: 'reset'
-      payload: initialState
-      
-    }
-
-    
-  
-  
-
-  interface Props {
+ interface Props {
     closeForm: () => void,
   }
-
-
-type initialState = {
-  rooms: number | string,
-  size: number | string,
-  rent: number | string,
-  contract: string,
-  
-}
-
 
 
 type addressItem = 
   | {
   forslagstekst: string} 
-
-
-const initialState = {
-  rooms: "",
-  size: "",
-  rent: "",
-  contract: "",
-  
-}
-
-
-
-function init(initialState: any) {
-  return initialState;
-}
-
-function reducer(state: State, action: Actions) {
-  switch (action.type) {
-    case 'setState':
-      return {
-        ...state,
-        [action.payload.field]: action.payload.value
-    }
-    case 'reset':
-      return init(action.payload);
-    default:
-      throw new Error();
-  }
-}
-
-
-
-
 
 
 const CreatePortfolioItem: React.FC<Props> = (props) => {
@@ -92,7 +25,7 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
     const [ city, setCity] = useState<string>('')
     const [ zip, setZip] = useState<string>('')
     const [ isValidAddress, setisValidAddress] = useState<string | boolean>("Not validated")
-    const [state, dispatch] = useReducer(reducer, initialState, init)
+    const [state, dispatch] = usePortfolioFormReducer()
     
    
 
@@ -111,9 +44,9 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
     ]
 
     const generalDataformGroup = [
-      {label: "Rooms", name: "rooms", type:"number", value: rooms, unit:"rooms" },
-      {label: "Size", name: "size", type:"number", value: size, unit: "m2"  },
-      {label: "Rent", name: "rent", type:"number", value: rent, unit: "Currency", unitTypes: ["EUR", "USD", "DKK"]}
+      {label: "Rooms", name: "rooms", type:"text", value: rooms, unit:"rooms" },
+      {label: "Size", name: "size", type:"text", value: size, unit: "m2"  },
+      {label: "Rent", name: "rent", type:"text", value: rent, unit: "Currency", unitTypes: ["EUR", "USD", "DKK"]}
     ]
 
   async function searchAddress(
@@ -206,8 +139,8 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
                           className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         >
                           <option>Danemark</option>
-                          <option>Germany</option>
-                          <option>Netherlands</option>
+                          <option disabled>Germany</option>
+                          <option disabled>Netherlands</option>
                         </select>
                       </div>
   

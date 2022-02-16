@@ -1,5 +1,10 @@
 🤝 Trade-offs
 
+Typescipt, Nextjs
+
+I used them to learn/relearn the React way but I needed some time to get going with Typescript, therefore it is not very homogenous. I need to set my own preferences 
+with Typescript create some snippets
+and maintain a personal reusable React components Library. 
 
 🔥 Firebase 
 
@@ -11,7 +16,7 @@ I would have stored each part of the address separately.
 
  
 ✨ CSS
-I used base Tailwind styles
+I used base Tailwind styles, some components could have been extracted stylewise more. 
 
 
 
@@ -19,8 +24,14 @@ I used base Tailwind styles
 
 
 DAWA API
-In production I would have choosen a different UI library or build a complex combobox component and grab the whole Object from the DAWA API 
+In production I would have choosen a different UI library or build a complex combobox/ autocomplete component and grab the whole Object from the DAWA API 
 instead of just the address value. Because of this the Form validation is a bit simple.
+
+
+I didn't use Redux or any central state library as React hooks were enough for this usecase.
+
+
+I have no idea whether the Danish translation is correct, hope there is smthing funny there :)
 
 
 

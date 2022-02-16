@@ -23,26 +23,31 @@ const InputFieldWithUnit = ({ value, label, name, id, placeholder, type, onChang
     <div className="mt-1 relative rounded-md shadow-sm">
         
     <input
-    readOnly={readOnly}
+      readOnly={readOnly}
       type={type}
       value={value}
       id={id}
       name={name}
       placeholder={placeholder}
       onChange={onChange}
-      className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+      className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full 
+      shadow-sm sm:text-sm border-gray-300 rounded-md"
     />
        <div className="absolute inset-y-0 right-0 flex items-center">
-          <label htmlFor="currency" className="sr-only">
+       { !unitTypes ? <div className="text-gray-500 pr-7 sm:text-sm">{unit}</div> :
+         ( <>
+            <label htmlFor="currency" className="sr-only">
             {unit}
           </label>
-         { unitTypes ? <select
+           <select
             id="currency"
             name="currency"
-            className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
+            className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 
+            border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
           >
               {unitTypes.map((unitType: string) => (<option key={unitType} value={unitType}>{unitType}</option>))}  
-          </select> :  <span className="text-gray-500 pr-4 sm:text-sm">{unit}</span>}
+          </select> </> ) 
+          }
         </div>
         </div>
 </div>
