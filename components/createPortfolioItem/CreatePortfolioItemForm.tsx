@@ -176,7 +176,7 @@ const handleSubmit = async function(e: React.FormEvent<HTMLFormElement>) {
   
                       <div className="col-span-6">
                         <label htmlFor="street-address" className="block text-sm font-medium text-gray-700">
-                        *Start typing street to prefill below fields 
+                        *Start typing address to prefill below fields (Danish only)
                         </label>
                         <input
                           list="address"
