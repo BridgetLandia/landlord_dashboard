@@ -30,8 +30,9 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
    
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      
       dispatch({type: 'setState', payload: {field: e.currentTarget.name, 
-        value: e.currentTarget.name === 'contract' ? e.currentTarget.value : Number(e.currentTarget.value) }})
+        value: e.currentTarget.name === 'contract' ? e.currentTarget.value : Number(e.currentTarget.value.replace(/[^\d]/g, '')) }})
     }
 
     const {rooms, size, rent, contract} = state

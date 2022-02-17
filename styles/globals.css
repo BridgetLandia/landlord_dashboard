@@ -19,3 +19,27 @@ a {
 * {
   box-sizing: border-box;
 }
+
+@media (max-width: 640px) {
+
+  table {
+    border-collapse: collapse;
+    position: relative
+  }
+  tbody tr {
+    display: flex;
+    flex-direction: row;
+    -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+    
+  }
+  thead {
+    position: absolute
+  }
+  tbody tr td {
+    postion:relative;
+    width: 50%;
+  }
+
+  
+}

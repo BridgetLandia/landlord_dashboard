@@ -39,7 +39,7 @@ const Home: NextPage = () => {
 
         <div className="flex justify-between ">
         <div className="flex felx-row text-left items-center ">
-                        <label htmlFor="country" className="block px-3 text-left text-sm font-medium text-gray-700">
+                        <label htmlFor="country" className="hidden sm:block px-3 text-left text-sm font-medium text-gray-700">
                          {t('SortBy')}
                         </label>
                         <select
@@ -62,7 +62,7 @@ const Home: NextPage = () => {
                         <button
                       type="button"
                       onClick={openCreatePortfolioItem}
-                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="inline-flex justify-center ml-2 py-1 px-1 sm:px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                       {t('addProperty')}
                     </button>

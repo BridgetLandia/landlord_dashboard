@@ -1,4 +1,4 @@
-import ListRow from './ListRow'
+import ListRow from '../portfolioListing/PortfoloioListRow'
 
 
 type Table = {
@@ -18,7 +18,7 @@ export default function List({ headers, tableData}: Table) {
           <div className="py-2 align-middle inline-block w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
               <table className="w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-50 sm:visible invisible">
                   <tr>
                   {Object.entries(headers).map((tableHeader) => (
                   <th key={tableHeader[0]}
@@ -30,7 +30,7 @@ export default function List({ headers, tableData}: Table) {
               ))}
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className=" bg-white divide-y divide-gray-200">
                   {tableData.map((property) => (
                       <ListRow key={property.id} property={property} headers={headers}/>
                   ))}

@@ -3,8 +3,8 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { dbPortfolioRef } from '../../firebase/firebase';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image'
-import Modal from './Modal'
-import { MenuAlt2Icon } from '@heroicons/react/outline';
+import Modal from '../generic/Modal'
+
 
 let streetViewBaseURL = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location="
 
@@ -28,9 +28,9 @@ const unit: { [key: string]: any } = {
 }
 
 export default function ListRow({property, headers}: TableRow) {
-
+  const [open, setOpenModal] = useState(false)
   const { t } = useTranslation();
-  const [openModal, setOpenModal] = useState(false)
+ 
   
 
     // Because I am using NoSQL Database I sort the document fields based on the Headers
@@ -51,7 +51,7 @@ export default function ListRow({property, headers}: TableRow) {
       // Delete document ID and streetview
     sortedProperties.splice(0, 2)
 
-
+  
    function handleModal() {
      
     setOpenModal(true)
@@ -62,14 +62,19 @@ export default function ListRow({property, headers}: TableRow) {
         <>
         <tr>
     {sortedProperties.map((propertyData) => (
-          <td className="px-6 py-4 whitespace-nowrap" key={propertyData[0]}>
-            <div className="flex items-center">
-            <div className="text-sm font-medium text-gray-900">{propertyData[1] + ' ' + `${propertyData[1] && unit[propertyData[0]] || ''}`}</div>
+          <td className=" border-gray-400  px-6 py-4 whitespace-nowrap" key={propertyData[0]}>
+          <div>
+            <span className="flex text-xs text-gray-700 uppercase sm:hidden top-0 inset-x-0 p-1 bg-gray-100 pl-2">
+                { propertyData[0] }
+              </span>
+            <div className="text-sm font-medium text-gray-900 whitespace-normal">{propertyData[1] + ' ' + `${propertyData[1] && unit[propertyData[0]] || ''}`}</div>
             </div>
           </td> ))}
 
-          <td className="px-6 py-1 whitespace-nowrap">
+          <td className="text-center px-6 py-1 whitespace-nowrap">
+            <div className="flex justify-center mt-7">
             <Image src={url} width="100" height="100" alt="street-view"/>
+            </div>
           </td>
           <td className="px-6 py-4 whitespace-nowrap">
             <a href={`https://www.google.com/maps/place/${property.address}`}
@@ -79,17 +84,12 @@ export default function ListRow({property, headers}: TableRow) {
             </a>
           </td>
           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button               onClick={handleModal}
-                  type="button"
-                  className="inline-flex justify-center py-2 px-4 border border-transparent 
-                  shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 
-                  hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                  {t('delete')}
-                </button>
+                    <a href="#" onClick={handleModal} className="text-indigo-600 hover:text-indigo-900">
+                    {t('delete')}
+                    </a>
           </td>
         </tr>
-{/* <Modal openModal={openModal}/> */}
+          {/* <Modal openModal={setOpenModal}/> */}
  
     </>
     )
