@@ -8,6 +8,8 @@ import { usePortfolioFormReducer, initialState } from './ReducerCreatePortfolio'
 
 const baseUrl = 'https://api.dataforsyningen.dk/'
 
+
+
  interface Props {
     closeForm: () => void,
   }
@@ -21,6 +23,7 @@ type addressItem =
 const CreatePortfolioItem: React.FC<Props> = (props) => {
     const [ addressList, setAddressList] = useState<Array<addressItem> | []>([])
     const [ addressSearch, setAddressSearch] = useState<string>('')
+    const [submitted, setSubmitted] = useState(false)
     const [ street, setStreet] = useState<string>('')
     const [ city, setCity] = useState<string>('')
     const [ zip, setZip] = useState<string>('')
@@ -74,8 +77,12 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
   }
   
 
-async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+const handleSubmit = async function(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (submitted) {
+      return;
+  }
+  setSubmitted(true)
     let validation = false
     try {
       const validateRequest = await fetch(`${baseUrl}autocomplete?type=adresse&q=${addressSearch}&caretpos=4`)
@@ -84,10 +91,11 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     if(result[0].forslagstekst === addressSearch){
        validation = true
        
-    }
+    } 
       
   } catch (error) {
       console.error(error);
+      setSubmitted(false)
   }
   
   console.log(validation)
@@ -112,15 +120,21 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
       setStreet('')
       setCity('')
       setZip('')
+      
           } catch (error){
           console.error(error);
+          setSubmitted(false)
         }
-       
+        props.closeForm()
       } else {
-        setisValidAddress(false)
-      }
+        setSubmitted(false)
         console.log(isValidAddress)
-   console.log('You clicked submit.')
+        console.log('You clicked submit.')
+       
+        setisValidAddress(false)
+        
+      }
+      
   }
     return (
       <>
