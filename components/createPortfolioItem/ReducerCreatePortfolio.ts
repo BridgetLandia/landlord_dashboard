@@ -48,7 +48,7 @@ function reducer(state: State, action: Actions) {
       case 'setState':
         return {
           ...state,
-          [action.payload.field]: action.payload.value
+            [action.payload.field]: action.payload.value
       }
       case 'reset':
         return init(action.payload);

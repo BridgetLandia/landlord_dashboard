@@ -1,5 +1,5 @@
 import { dbPortfolioRef } from '../../firebase/firebase';
-import { addDoc, connectFirestoreEmulator } from  'firebase/firestore';
+import { addDoc} from  'firebase/firestore';
 import { useState } from 'react'
 import InputField from '../generic/Input';
 import InputFieldWithUnit from '../generic/InputWithUnit'
@@ -30,7 +30,8 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
    
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      dispatch({type: 'setState', payload: {field: e.currentTarget.name, value: e.currentTarget.value}})
+      dispatch({type: 'setState', payload: {field: e.currentTarget.name, 
+        value: e.currentTarget.name === 'contract' ? e.currentTarget.value : Number(e.currentTarget.value) }})
     }
 
     const {rooms, size, rent, contract} = state
@@ -100,7 +101,6 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         let placeID = result.results[0].geometry.location
         setisValidAddress("Not validated")
         let formData = {
-      
       ...state,
       address: addressSearch,
       streetview: placeID}
