@@ -1,5 +1,5 @@
 import { dbPortfolioRef } from '../../firebase/firebase';
-import { addDoc } from  'firebase/firestore';
+import { addDoc, connectFirestoreEmulator } from  'firebase/firestore';
 import { useState } from 'react'
 import InputField from '../generic/Input';
 import InputFieldWithUnit from '../generic/InputWithUnit'
@@ -30,7 +30,7 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
    
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      dispatch({type: 'setState', payload: {field: e.currentTarget.name, value: Number(e.currentTarget.value)}})
+      dispatch({type: 'setState', payload: {field: e.currentTarget.name, value: e.currentTarget.value}})
     }
 
     const {rooms, size, rent, contract} = state
@@ -90,16 +90,31 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
   
   console.log(validation)
       if(validation) {
+        let addressJSON = JSON.stringify(addressSearch)
+        let apikey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY
+        
+        try {
+        const geocode = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${addressJSON}&key=${apikey}`)
+        const result = await geocode.json() 
+        console.log(result)
+        let placeID = result.results[0].geometry.location
         setisValidAddress("Not validated")
-      let formData = {
-    ...state,
-    address: addressSearch }
-
-
-    addDoc(dbPortfolioRef, formData)
-    dispatch({type: 'reset', payload: initialState})
-    setAddressSearch('')
-
+        let formData = {
+      
+      ...state,
+      address: addressSearch,
+      streetview: placeID}
+   
+      addDoc(dbPortfolioRef, formData)
+      dispatch({type: 'reset', payload: initialState})
+      setAddressSearch('')
+      setStreet('')
+      setCity('')
+      setZip('')
+          } catch (error){
+          console.error(error);
+        }
+       
       } else {
         setisValidAddress(false)
       }

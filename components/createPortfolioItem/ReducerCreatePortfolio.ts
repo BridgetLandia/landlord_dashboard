@@ -11,7 +11,7 @@ type State = {
       type: 'setState',
       payload: {
       field: string
-      value: string | number,
+      value: string | number 
     }
 
     }

@@ -11,7 +11,7 @@ const tableHeaders =
     size: true,
     rent: true,
     contract: true,
-    streetView: true ,
+    streetView: true,
     edit: false ,
     delete: false
 }

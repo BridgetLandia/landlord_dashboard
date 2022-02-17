@@ -31,7 +31,8 @@ instead of just the address value. Because of this the Form validation is a bit 
 I didn't use Redux or any central state library as React hooks were enough for this usecase.
 
 
-I have no idea whether the Danish translation is correct, hope there is smthing funny there :)
+I have no idea whether the Danish translation is correct, hope there is smthing funny there :) and I did'nt translate all the strings, 
+just some to showcase that it is working.
 
 
 
