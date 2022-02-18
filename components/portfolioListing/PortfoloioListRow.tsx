@@ -16,28 +16,29 @@ type TableRow = {
 interface Property {
         id?: string,
         address?: string,
-        streetview?: { lat: number, lng: number} 
+        streetview?: { lat: number, lng: number},
+        currency?: string
       }
 
 
 
-const unit: { [key: string]: any } = {
-  rooms: "room",
-  size: "m2",
-  rent: "EUR"
-}
-
 export default function ListRow({property, headers}: TableRow) {
   const [open, setOpenModal] = useState(false)
   const { t } = useTranslation();
- 
+  let currency = property.currency
+
+  const unit: { [key: string]: any } = {
+    rooms: "room",
+    size: "m2",
+    rent: currency
+  }
   
 
     // Because I am using NoSQL Database I sort the document fields based on the Headers
     let deleteItemData = { id: property.id, address: property.address }
     let apikey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY
     let streetviewData = property.streetview
-    console.log(streetviewData)
+    
     let url = `${streetViewBaseURL}${streetviewData?.lat},${streetviewData?.lng}&fov=80&heading=70&pitch=0&key=${apikey}`
     const sortingArray = Object.keys(headers)    
       let portfolioDataArray = Object.entries(property)
@@ -47,9 +48,9 @@ export default function ListRow({property, headers}: TableRow) {
         [ portfolioDataArray, sortingArray ]
       );
   
-   console.log(sortedProperties)
+   
       // Delete document ID and streetview
-    sortedProperties.splice(0, 2)
+    sortedProperties.splice(0, 3)
 
   
    function handleModal() {

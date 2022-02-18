@@ -8,13 +8,14 @@ type InputFields = {
     placeholder?: string, 
     type: string,
     onChange?: React.ChangeEventHandler,
+    selectUnitType: React.ReactEventHandler<HTMLSelectElement>,
     readOnly: boolean,
     style?: string,
     unit?: string,
     unitTypes?: Array<string>
 }
 
-const InputFieldWithUnit = ({ value, label, name, id, placeholder, type, onChange, readOnly, unit , unitTypes }: InputFields) => (
+const InputFieldWithUnit = ({ value, label, name, id, placeholder, type, onChange, readOnly, unit , unitTypes, selectUnitType }: InputFields) => (
    
   <div className="form-group">
     <label htmlFor={name} className="block text-sm font-medium text-gray-700">
@@ -40,12 +41,13 @@ const InputFieldWithUnit = ({ value, label, name, id, placeholder, type, onChang
             {unit}
           </label>
            <select
+            onChange={selectUnitType}
             id="currency"
             name="currency"
             className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 
             border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
           >
-              {unitTypes.map((unitType: string) => (<option key={unitType} value={unitType}>{unitType}</option>))}  
+              {unitTypes.map((unitType: string, index) => (<option key={unitType} value={unitType}>{unitType}</option>))}  
           </select> </> ) 
           }
         </div>

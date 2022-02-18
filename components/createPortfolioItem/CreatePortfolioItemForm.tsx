@@ -27,6 +27,7 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
     const [ street, setStreet] = useState<string>('')
     const [ city, setCity] = useState<string>('')
     const [ zip, setZip] = useState<string>('')
+    const [ currency, setCurrency] = useState<string>('EUR')
     const [ isValidAddress, setisValidAddress] = useState<string | boolean>("Not validated")
     const [state, dispatch] = usePortfolioFormReducer()
     
@@ -38,6 +39,11 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
         value: e.currentTarget.name === 'contract' ? e.currentTarget.value : Number(e.currentTarget.value.replace(/[^\d]/g, '')) }})
     }
 
+    const selectUnitType = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      console.log(e.target.value)
+            setCurrency(e.target.value)
+            
+    }
     const {rooms, size, rent, contract} = state
     
     console.log(state)
@@ -98,7 +104,7 @@ const handleSubmit = async function(e: React.FormEvent<HTMLFormElement>) {
       setSubmitted(false)
   }
   
-  console.log(validation)
+  
       if(validation) {
         let addressJSON = JSON.stringify(addressSearch)
         let apikey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY
@@ -106,11 +112,12 @@ const handleSubmit = async function(e: React.FormEvent<HTMLFormElement>) {
         try {
         const geocode = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${addressJSON}&key=${apikey}`)
         const result = await geocode.json() 
-        console.log(result)
+       
         let placeID = result.results[0].geometry.location
         setisValidAddress("Not validated")
         let formData = {
       ...state,
+      currency: currency,
       address: addressSearch,
       streetview: placeID}
    
@@ -221,6 +228,7 @@ const handleSubmit = async function(e: React.FormEvent<HTMLFormElement>) {
                           id={fieldName.name}
                           value={fieldName.value}
                           onChange={onChange}
+                          selectUnitType={selectUnitType}
                           label={fieldName.label}
                           readOnly={false}
                           unit={fieldName.unit}
