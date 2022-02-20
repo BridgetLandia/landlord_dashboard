@@ -42,7 +42,7 @@ const Home: NextPage = () => {
                   <label htmlFor="country" className="hidden sm:block px-3 text-left text-sm font-medium text-gray-700">
                     {t('SortBy')}
                   </label>
-                      <select
+                      <select 
                         id="sort"
                         name="sort"
                         autoComplete="sort"

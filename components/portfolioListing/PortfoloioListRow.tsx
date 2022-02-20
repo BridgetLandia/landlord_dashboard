@@ -75,7 +75,7 @@ export default function ListRow({property, headers}: TableRow) {
 
           <td className="text-center px-6 py-1 whitespace-nowrap">
             <div className="flex  justify-center mb-3 sm:justify-start mt-7">
-            <Image src={url} width="100" height="100" alt="street-view"/>
+            <Image src={url} width="100" height="100" alt="street-view"/> 
             </div>
           </td>
           <td className="px-6 py-4 whitespace-nowrap">

@@ -20,7 +20,7 @@ const InputFieldWithUnit = ({ value, label, name, id, placeholder, type, onChang
   <div className="form-group">
     <label htmlFor={name} className="block text-sm font-medium text-gray-700">
         {label}
-    </label>
+    </label> 
     <div className="mt-1 relative rounded-md shadow-sm">
         
     <input

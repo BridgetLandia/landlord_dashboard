@@ -5,33 +5,46 @@ import InputField from '../generic/Input';
 import InputFieldWithUnit from '../generic/InputWithUnit'
 import Button from '../generic/Button'
 import { usePortfolioFormReducer, initialState } from './ReducerCreatePortfolio';
+import GeneralCombobox from '../generic/Combobox'
+
 
 const baseUrl = 'https://api.dataforsyningen.dk/'
-
-
 
  interface Props {
     closeForm: () => void,
   }
 
 
-type addressItem = 
-  | {
-  forslagstekst: string} 
-
+  type addressItem = 
+  | { forslagstekst: string
+      data: object }
+  | { [key: string]: any }
 
 const CreatePortfolioItem: React.FC<Props> = (props) => {
     const [ addressList, setAddressList] = useState<Array<addressItem> | []>([])
-    const [ addressSearch, setAddressSearch] = useState<string>('')
+    const [ addressQuery, setaddressQuery] = useState<string>('')
+    const [selected, setSelected] = useState(addressList[0])
     const [submitted, setSubmitted] = useState(false)
     const [ street, setStreet] = useState<string>('')
+    const [ houseNumber, setHouseNumber] = useState<string>('')
     const [ city, setCity] = useState<string>('')
     const [ zip, setZip] = useState<string>('')
     const [ currency, setCurrency] = useState<string>('EUR')
     const [ isValidAddress, setisValidAddress] = useState<string | boolean>("Not validated")
     const [state, dispatch] = usePortfolioFormReducer()
     
-   
+   function handleSelect(item: addressItem){
+    console.log(item)
+        setSelected(item)
+    let splitAddress = item.data
+  
+      setStreet(splitAddress.vejnavn)
+      setHouseNumber(splitAddress.husnr)
+      setZip(splitAddress.postnr)
+      setCity(splitAddress.postnrnavn)
+    
+  
+    }
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       
@@ -50,6 +63,7 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
 
     const addressDataformGroup = [
       {label: "*Street", name: "street", type:"text", value: street},
+      {label: "*Nr.", name: "houseNumber", type:"text", value: houseNumber},
       {label: "*City", name: "city", type:"text", value: city },
       {label: "*Zip", name: "zip", type:"text", value: zip }
     ]
@@ -62,18 +76,11 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
 
   async function searchAddress(
     e: React.ChangeEvent<HTMLInputElement>) {
-    setAddressSearch(e.currentTarget.value)
-    let splitAddress = e.currentTarget.value.split(',')
-    let lastItem = splitAddress [splitAddress.length - 1].split(' ')
-   
-    if(splitAddress .length > 1){
-      setStreet(splitAddress[0])
-      setZip(lastItem[1])
-      setCity(lastItem[2])
-   
-    }
+    setaddressQuery(e.currentTarget.value)
+    console.log(e.currentTarget.value)
+    
       try {
-          const searchRequest = await fetch(`${baseUrl}autocomplete?type=adresse&q=${addressSearch}&caretpos=4`)
+          const searchRequest = await fetch(`${baseUrl}autocomplete?type=adresse&q=${addressQuery}&caretpos=4`)
           const registerList = await searchRequest.json();
           setAddressList(registerList)
           setisValidAddress("Not validated")
@@ -90,23 +97,16 @@ const handleSubmit = async function(e: React.FormEvent<HTMLFormElement>) {
   }
   setSubmitted(true)
     let validation = false
-    try {
-      const validateRequest = await fetch(`${baseUrl}autocomplete?type=adresse&q=${addressSearch}&caretpos=4`)
-      const result = await validateRequest.json();
-      console.log(result[0].forslagstekst)
-    if(result[0].forslagstekst === addressSearch){
-       validation = true
-       
-    } 
-      
-  } catch (error) {
-      console.error(error);
+    if(selected && selected.forslagstekst){
+       validation = true   
+  } else {
       setSubmitted(false)
+      setisValidAddress(false)
   }
   
   
       if(validation) {
-        let addressJSON = JSON.stringify(addressSearch)
+        let addressJSON = JSON.stringify(selected.forslagstekst)
         let apikey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY
         
         try {
@@ -118,16 +118,16 @@ const handleSubmit = async function(e: React.FormEvent<HTMLFormElement>) {
         let formData = {
       ...state,
       currency: currency,
-      address: addressSearch,
+      address: selected.forslagstekst,
       streetview: placeID}
    
       addDoc(dbPortfolioRef, formData)
       dispatch({type: 'reset', payload: initialState})
-      setAddressSearch('')
+      setaddressQuery('')
       setStreet('')
       setCity('')
       setZip('')
-      
+      setHouseNumber('')
           } catch (error){
           console.error(error);
           setSubmitted(false)
@@ -159,13 +159,11 @@ const handleSubmit = async function(e: React.FormEvent<HTMLFormElement>) {
               </div>
             </div>
             <div className="mt-5 md:mt-0 md:col-span-2">
-              <form action="#" method="POST" onSubmit={handleSubmit}>
+              <form action="#" method="POST" onSubmit={handleSubmit}> 
                 <div className="shadow overflow-hidden sm:rounded-md">
                   <div className="px-4 py-5 bg-white sm:p-6">
-                    <div className="grid grid-cols-6 gap-6">
-                 
-  
-                      <div className="col-span-6 sm:col-span-3">
+                    <div className="grid grid-cols-6 gap-6"> 
+                     <div className="col-span-6 sm:col-span-3">
                         <label htmlFor="country" className="block text-sm font-medium text-gray-700">
                         *Country
                         </label>
@@ -185,29 +183,17 @@ const handleSubmit = async function(e: React.FormEvent<HTMLFormElement>) {
                         <label htmlFor="street-address" className="block text-sm font-medium text-gray-700">
                         *Start typing address to prefill below fields (Danish only)
                         </label>
-                        <input
-                          list="address"
-                          value={addressSearch || ''}
-                          onChange={searchAddress}
-                          type="text"
-                          name="street-address"
-                          id="street-address"
-                          autoComplete="street-address"
-                          className={`mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm ${isValidAddress ? 'border-gray-300' : 'border border-red-700'} rounded-md`}
+                        <GeneralCombobox 
+                        searchAddress={searchAddress} 
+                        addressList={addressList} 
+                        addressQuery={addressQuery} 
+                        isValidAddress={isValidAddress}
+                        selected={selected}
+                        handleSelect={handleSelect}
                         />
-                        <datalist id="address">
-                          {addressList.length > 0 ? addressList.map((addressItem: addressItem) => 
-                          (
-                          <option key={addressItem.forslagstekst}>{addressItem.forslagstekst}</option>
-                          )
-                          ) : 
-                          <option>No similar address found</option>}
-                        </datalist>
+                      
                         {!isValidAddress  && <span className="text-xs text-red-700" id="passwordHelp">Invalid address, choose from the dropdown</span>}
                       </div>
-
-                 
-
                       {addressDataformGroup.map((fieldName) => (<div key={fieldName.label} className="col-span-6 sm:col-span-2">
                         <InputField
                           type={fieldName.type}
@@ -220,7 +206,6 @@ const handleSubmit = async function(e: React.FormEvent<HTMLFormElement>) {
                       </div>
                      
                       ))}
-
                       {generalDataformGroup.map((fieldName) => (<div key={fieldName.label} className="col-span-6 sm:col-span-2">
                         <InputFieldWithUnit
                           type={fieldName.type}

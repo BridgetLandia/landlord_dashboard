@@ -33,7 +33,7 @@ export default function PortfolioList(props: Props) {
   return (
     <>
     <List tableData={portfolio} headers={tableHeaders}/>
-        <p>{portfolioItemsError}</p>
+        <p>{portfolioItemsError}</p>  
     </>
   )
 }
