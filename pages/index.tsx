@@ -5,7 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useState } from 'react'
 import { useTranslation } from 'next-i18next';
 import { GetStaticProps } from 'next'
-
+import Alert from '../components/generic/Alert'
 
 export const getStaticProps: GetStaticProps = async ({locale}) => {
   
@@ -32,8 +32,10 @@ const Home: NextPage = () => {
         setSortValue(sortvalue)
   }
   return (
+    <>
+    <Alert />
     <div className="w-full">
-     
+       
       {openForm && <CreatePortfolioItem  closeForm={closeForm}/>}
       <div className="mt-2 px-4 py-3 bg-gray-50 text-right sm:px-6">
         <h1 className="pb-4 text-left text-2xl text-indigo-600 font-bold">{t('portfolio')}</h1>
@@ -70,6 +72,7 @@ const Home: NextPage = () => {
       </div>
       <PortfolioList sortValue={sortValue}/>
     </div>
+    </>
   )
 }
 

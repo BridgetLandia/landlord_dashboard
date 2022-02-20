@@ -24,7 +24,7 @@ type addressItem =
       <>
     <div className="w-1/2">
     <Combobox value={selected} onChange={handleSelect}> 
-      <div className="relative mt-1 z-50">
+      <div className="relative mt-1 z-10">
         <div className="relative w-full text-left bg-white shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-indigo-500 
          focus-visible:ring-offset-indigo-500  focus-visible:ring-offset-2 sm:text-sm overflow-hidden">
           <Combobox.Input

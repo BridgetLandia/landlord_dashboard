@@ -1,12 +1,12 @@
 import { dbPortfolioRef } from '../../firebase/firebase';
 import { addDoc} from  'firebase/firestore';
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import InputField from '../generic/Input';
 import InputFieldWithUnit from '../generic/InputWithUnit'
 import Button from '../generic/Button'
 import { usePortfolioFormReducer, initialState } from './ReducerCreatePortfolio';
-import GeneralCombobox from '../generic/Combobox'
-
+import GeneralCombobox from '../generic/AddressCombobox'
+import AlertContext from '../../hooks/AlertContext';
 
 const baseUrl = 'https://api.dataforsyningen.dk/'
 
@@ -32,7 +32,9 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
     const [ currency, setCurrency] = useState<string>('EUR')
     const [ isValidAddress, setisValidAddress] = useState<string | boolean>("Not validated")
     const [state, dispatch] = usePortfolioFormReducer()
-    
+    const alert = useContext(AlertContext);
+
+
    function handleSelect(item: addressItem){
     console.log(item)
         setSelected(item)
@@ -128,12 +130,14 @@ const handleSubmit = async function(e: React.FormEvent<HTMLFormElement>) {
       setCity('')
       setZip('')
       setHouseNumber('')
+          alert?.success("Item successfully created!", 2)
           } catch (error){
           console.error(error);
           setSubmitted(false)
         }
         props.closeForm()
       } else {
+       
         setSubmitted(false)
         console.log(isValidAddress)
         console.log('You clicked submit.')
