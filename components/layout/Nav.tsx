@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
-import LanguageSwitcher from './LanguageSwitcher'
+import LanguageSwitcher from '../generic/LanguageSwitcher'
 import { useTranslation } from 'next-i18next';
 
 

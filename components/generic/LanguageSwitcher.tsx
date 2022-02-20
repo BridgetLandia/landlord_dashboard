@@ -1,7 +1,5 @@
 import { useRouter } from 'next/router'
 
-
-
 const languages = [ ['English', 'en'], ['Danish', 'da']]
 
 
@@ -9,7 +7,6 @@ export default function LanguageSwitcher() {
   const router = useRouter()
 
   
- 
   const handleLocaleChange = (data: string) =>{
     router.replace(router.pathname, router.pathname, { locale: data })
   }

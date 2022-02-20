@@ -1,6 +1,6 @@
 import Nav from './Nav'
 import Meta from './Meta'
-import styles from '../styles/Layout.module.css'
+import styles from '../../styles/Layout.module.css'
 
 interface LayoutProps {
   children: React.ReactNode;
