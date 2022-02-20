@@ -22,7 +22,7 @@ type addressItem =
 
   return (
       <>
-    <div className="w-1/2">
+    <div className=" w-full sm:w-1/2">
     <Combobox value={selected} onChange={handleSelect}> 
       <div className="relative mt-1 z-10">
         <div className="relative w-full text-left bg-white shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-indigo-500 
