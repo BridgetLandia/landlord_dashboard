@@ -1,9 +1,5 @@
 🤝 Trade-offs
 
-Typescipt, Nextjs
-
-I used them to relearn the React way but I needed some time to get going with Typescript.
-
 
 🔥 Firebase 
 
@@ -18,14 +14,8 @@ I would have stored each part of the address separately.
 I used base Tailwind styles, some components could have been extracted stylewise more.
 
 
-
 🪄 Used the Fetch API instead of axios library because I didn't need interceptors or other functionality. 
 
-
-DAWA API - autocomplete
-In production I would have choosen a different UI library or build a complex combobox/autocomplete component and grab the whole Object from the DAWA API 
-instead of just the address value. Because of this the Form validation is a bit simple. I compare the user input with the first hit in the autocomplete list.
-And you need to actaully type the address for the autocomplete to appear.
 
 
 I didn't use Redux or any state library as React hooks were enough for this usecase.

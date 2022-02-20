@@ -5,8 +5,6 @@ import LanguageSwitcher from '../generic/LanguageSwitcher'
 import { useTranslation } from 'next-i18next';
 
 
-
-
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
