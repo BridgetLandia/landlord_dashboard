@@ -1,5 +1,7 @@
 🤝 Trade-offs
 
+I tried to extract and generalize some components but there would be room for more, 
+I tried to create the whole user journey instead.
 
 🔥 Firebase 
 
@@ -11,7 +13,7 @@ I would have stored each part of the address separately.
 
  
 ✨ CSS
-I used base Tailwind styles, some components could have been extracted stylewise more.
+I used base Tailwind styles, some components could have been extracted stylewise more. 
 
 
 🪄 Used the Fetch API instead of axios library because I didn't need interceptors or other functionality. 

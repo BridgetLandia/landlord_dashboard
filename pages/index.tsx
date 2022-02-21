@@ -35,7 +35,6 @@ const Home: NextPage = () => {
     <>
     <Alert />
     <div className="w-full">
-       
       {openForm && <CreatePortfolioItem  closeForm={closeForm}/>}
       <div className="mt-2 px-4 py-3 bg-gray-50 text-right sm:px-6">
         <h1 className="pb-4 text-left text-2xl text-indigo-600 font-bold">{t('portfolio')}</h1>

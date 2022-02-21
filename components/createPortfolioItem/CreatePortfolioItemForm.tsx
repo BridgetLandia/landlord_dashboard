@@ -36,7 +36,7 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
 
 
    function handleSelect(item: addressItem){
-    console.log(item)
+   
         setSelected(item)
     let splitAddress = item.data
   
@@ -55,14 +55,12 @@ const CreatePortfolioItem: React.FC<Props> = (props) => {
     }
 
     const selectUnitType = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      console.log(e.target.value)
             setCurrency(e.target.value)
             
     }
     const {rooms, size, rent, contract} = state
     
-    console.log(state)
-
+    
     const addressDataformGroup = [
       {label: "*Street", name: "street", type:"text", value: street},
       {label: "*Nr.", name: "houseNumber", type:"text", value: houseNumber},
@@ -137,11 +135,8 @@ const handleSubmit = async function(e: React.FormEvent<HTMLFormElement>) {
         }
         props.closeForm()
       } else {
-       
+        alert?.success("Item successfully created!", 2)
         setSubmitted(false)
-        console.log(isValidAddress)
-        console.log('You clicked submit.')
-       
         setisValidAddress(false)
         
       }
